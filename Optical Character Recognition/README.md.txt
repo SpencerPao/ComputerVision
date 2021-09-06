@@ -1,1 +1,0 @@
-This is a quick demonstration on Optical Character Recognition.
