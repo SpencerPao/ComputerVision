@@ -9,8 +9,10 @@ Source code for the OpenCV Object Detection in Games series on the **Learn Code 
 
 ---
 ## The Link to the Dinosaur Game can be found [**Here**](https://trex-runner.com/)
+![Dinosaur_Image_Screenshot](Dinosaur_Screenshot.PNG)
+
 ### Window Capture Folder
-- Tools for taking a screen shot for the dinosaur game. I will be using this to store the appropriate PNG files into its associated folders (Jump, Nothing, Duck).
+- Tools for taking a screen shot for the dinosaur game. I will be using this to store the appropriate PNG files into its associated folders (Jump, Duck).
 
 ### Dinosaur_Game_Data_Exploration.ipynb 
 - Playing around with Windows OS and checking to see if functions work. 
