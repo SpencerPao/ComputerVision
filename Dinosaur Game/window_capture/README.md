@@ -11,4 +11,4 @@
 # Numpy Arrays are too large to be stored on Github
 - When you run the program, numpy arrays will populate in the data folder.
 - Data/screenshots.npy: This is the screenshots array.
-- Data/command_keys.npy: Target Value (32: space, 38: Up Arrow Key, 40: Down Arrow Key)
+- Data/command_keys.npy: Target Value (**32**: space, **38**: Up Arrow Key, **40**: Down Arrow Key)
