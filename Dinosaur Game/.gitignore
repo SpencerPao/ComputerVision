@@ -1,0 +1,8 @@
+/venv
+/.vscode
+__pycache__
+/pydirectinput.egg-info
+/build
+/dist
+*.npy
+*/.ipynb_checkpoints/*
