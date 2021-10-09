@@ -1,3 +1,6 @@
+"""The windowcapture.py is a class meant to take screenshots on a windows OS.\
+It is meant to efficiently take as many screenshots in a second (FPS)."""
+
 import numpy as np
 import win32gui
 import win32ui
@@ -5,7 +8,9 @@ import win32con
 
 
 class WindowCapture:
-
+    """Kudos to @learncodebygaming for this base class to work with.
+    His github can be found here: https://github.com/learncodebygaming/opencv_tutorials/tree/master/004_window_capture
+    """
     # properties
     w = 0
     h = 0
@@ -16,7 +21,9 @@ class WindowCapture:
     offset_y = 0
 
     # constructor
-    def __init__(self, window_name):
+    def __init__(self, window_name: str):
+        '''Initialize border parameters for picture cut off.
+        params:  window_name: Name of window to take screen shots of. '''
         # find the handle for the window we want to capture
         self.hwnd = win32gui.FindWindow(None, window_name)
         if not self.hwnd:
@@ -41,6 +48,7 @@ class WindowCapture:
         self.offset_y = window_rect[1] + self.cropped_y
 
     def get_screenshot(self):
+        """Process of getting screen and taking screenshot of the screen."""
         # get the window image data
         # wDC = win32gui.GetWindowDC(self.hwnd)
         hdesktop = win32gui.GetDesktopWindow()
@@ -83,6 +91,8 @@ class WindowCapture:
     # once you have it, update window_capture()
     # https://stackoverflow.com/questions/55547940/how-to-get-a-list-of-the-name-of-every-open-window
     def list_window_names(self):
+        """If applicable, you can get the names of all visible \
+        screens to use as input in the class."""
         def winEnumHandler(hwnd, ctx):
             if win32gui.IsWindowVisible(hwnd):
                 print(hex(hwnd), win32gui.GetWindowText(hwnd))
