@@ -1,4 +1,4 @@
-<center>#Computer Vision Model for beating the Dinosaur Game</center>
+#<center>Computer Vision Model for beating the Dinosaur Game</center>
 
 
 Source code for the OpenCV Object Detection in Games series on the **Learn Code By Gaming** YouTube channel.
