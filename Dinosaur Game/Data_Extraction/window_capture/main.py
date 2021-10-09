@@ -3,7 +3,7 @@ import win32con as con
 import numpy as np
 import os
 from time import time
-from windowcapture import WindowCapture
+from utils.windowcapture import WindowCapture
 from utils.getkeys import keys
 # Change the working directory to the folder this script is in.
 # Doing this because I'll be putting the files from each video in their own folder on GitHub
