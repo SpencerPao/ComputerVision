@@ -1,4 +1,4 @@
-# Computer Vision Model for beating the Dinosaur Game
+<center> Computer Vision Model for beating the Dinosaur Game </center>
 
 
 Source code for the OpenCV Object Detection in Games series on the **Learn Code By Gaming** YouTube channel.
@@ -8,8 +8,8 @@ Source code for the OpenCV Object Detection in Games series on the **Learn Code 
 [**His Nifty tutorials can be found here on YouTube**](https://www.youtube.com/playlist?list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI)
 
 ---
-## The Link to the Dinosaur Game can be found [**Here**](https://trex-runner.com/)
-![Dinosaur_Image_Screenshot](Dinosaur_Screenshot.PNG)
+<center> ## The Link to the Dinosaur Game can be found [**Here**](https://trex-runner.com/) </center>
+![Dinosaur_Image_Screenshot](Dinosaur_Screenshot.PNG) 
 
 ### Window Capture Folder
 - Tools for taking a screen shot for the dinosaur game. I will be using this to store the appropriate PNG files into its associated folders (Jump, Duck).
