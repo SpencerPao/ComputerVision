@@ -5,5 +5,5 @@ __pycache__
 /build
 /dist
 *.npy
-ipynb_checkpoints
+.ipynb_checkpoints
 */.ipynb_checkpoints/*
