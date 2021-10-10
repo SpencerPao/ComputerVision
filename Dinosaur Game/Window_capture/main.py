@@ -1,3 +1,4 @@
+"""Main execution for generating screenshot data of dinosaur game."""
 import cv2 as cv
 import win32con as con
 import numpy as np
@@ -14,8 +15,8 @@ file_name2 = "Data/command_keys.npy"
 
 
 def get_data():
-    '''Function obtained from ClarityCoders:
-    https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py'''
+    """Function obtained from ClarityCoders:
+    https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
     if os.path.isfile(file_name):
         print('File exists, loading previous data!')
         image_data = list(np.load(file_name, allow_pickle=True))
@@ -28,14 +29,13 @@ def get_data():
 
 
 def save_data(image_data, targets):
-    '''Function obtained from ClarityCoders:
-    https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py'''
+    """Function obtained from ClarityCoders: https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
     np.save(file_name, image_data)
     np.save(file_name2, targets)
 
 
 def main():
-    '''Main function to execute.'''
+    """Main function to execute."""
     image_data, target = get_data()
     # initialize the WindowCapture class
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
