@@ -1,13 +1,12 @@
 """Main execution for generating screenshot data of dinosaur game."""
+from utils.getkeys import keys
 import cv2 as cv
 import win32con as con
 import numpy as np
 import os
 from time import time
 from utils.windowcapture import WindowCapture
-from utils.getkeys import keys
-# Change the working directory to the folder this script is in.
-# Doing this because I'll be putting the files from each video in their own folder on GitHub
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 file_name = "Data/screenshots.npy"
@@ -35,50 +34,46 @@ def save_data(image_data, targets):
 
 
 def main():
-    """Main function to execute."""
+    """Houses main function."""
     image_data, target = get_data()
-    # initialize the WindowCapture class
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
     while True:
-        print("Press 'Space' to start -- else 'q' to quit program")
+        print("Press 'Space' to start -- else 'q' to quit program.")
         key = keys()
-        if key == 'Q':  # quit
+        if key == 0x51:  # quit
             cv.destroyAllWindows()
             break
-        if key == 32:
+        if key == con.VK_SPACE:
             print("Starting Program")
             break
-        elif key == con.VK_UP:
-            print("You pressed the up arrow key...")
-        elif key == con.VK_DOWN:
-            print("You pressed the down arrow key...")
-
     loop_time = time()
     while(True):
-        # get an updated image of the game
+        # Get screenshot
         screenshot = wincap.get_screenshot()
-        #cv.imshow('Computer Vision', screenshot)
-        # Storing the images.
-        # debug the loop rate
-        print('FPS {}'.format(1 / (time() - loop_time)))
+        print("FPS {}".format(1 / (time() - loop_time)))
         loop_time = time()
         key = keys()
-        if key == "Q":
+        if key == 0x51:
             cv.destroyAllWindows()
             break
-        if key == con.VK_UP or key == 32:
-            print("Up Arrow key or Space bar initiated")
-            #screenshot = cv.resize(screenshot, (224, 224))
+        if key == con.VK_UP or key == con.VK_SPACE:
+            print("Up Arrow Key or Space Bar initiated")
             image_data.append(screenshot)
             target.append(key)
+            # Make sure to jump only using the up arrow key
+            # Since we are using the space bar key for the start of the program.
+            # Once up arrow key goes up -> we want to record screenshot
+            # and record key.
         elif key == con.VK_DOWN:
-            print("Down Arrow Key initiated")
-            #screenshot = cv.resize(screenshot, (224, 224))
+            print("Down Arrow Key Initiated.")
             image_data.append(screenshot)
             target.append(key)
-    print('Done.')
+            # Attach screen shot
+            # Attach record key.
+    print("Done")
+    # Save data.
     save_data(image_data, target)
-    print("Finished saving image data with associated target values.")
+    print("Finished Saving image data and target values.")
 
 
 if __name__ == '__main__':
