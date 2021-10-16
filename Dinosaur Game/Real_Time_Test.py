@@ -6,7 +6,7 @@ import pickle
 import keyboard
 
 """CHANGE FILE PATH"""
-model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))
+model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
 
 print("Model Loaded.")
 
