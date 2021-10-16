@@ -9,8 +9,8 @@ from utils.windowcapture import WindowCapture
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-file_name = "Data/screenshots_1.npy"
-file_name2 = "Data/command_keys_1.npy"
+file_name = "Data/screenshots.npy"
+file_name2 = "Data/command_keys.npy"
 
 
 def get_data():
@@ -56,8 +56,8 @@ def main():
         if key == 0x51:
             cv.destroyAllWindows()
             break
-        if key == con.VK_UP or key == con.VK_SPACE:
-            print("Up Arrow Key or Space Bar initiated")
+        if key == con.VK_UP:
+            print("Up Arrow Key")
             image_data.append(screenshot)
             target.append(key)
             # Make sure to jump only using the up arrow key
@@ -71,6 +71,8 @@ def main():
             # Attach screen shot
             # Attach record key.
     print("Done")
+    image_data = image_data[:-10]
+    target = target[:-10]
     # Save data.
     save_data(image_data, target)
     print("Finished Saving image data and target values.")
