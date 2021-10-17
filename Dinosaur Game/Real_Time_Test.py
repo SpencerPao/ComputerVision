@@ -13,13 +13,9 @@ print("Model Loaded.")
 
 def main():
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
-
     while True:
-        print("Press 'Space' to start -- else 'q' to quit program")
+        print("Press 'Space' to start")
         key = keys()
-        if key == 'Q':  # quit
-            cv.destroyAllWindows()
-            break
         if key == 32:
             print("Starting Program")
             break
