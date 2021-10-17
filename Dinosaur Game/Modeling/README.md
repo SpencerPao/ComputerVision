@@ -8,5 +8,5 @@
 
 ## Modeling Efforts
 - Training model on screenshot data
-- Check out basic-models.ipynb -- Major thanks to [zorian](https://github.com/zorian15) for helping set up this notebook
+- Check out basic-models.ipynb -- Major thanks to Zorian for helping set up this notebook. You can check him out: [Zorian's YouTube Channel](https://www.youtube.com/channel/UC0oMmMPgGVqnDqNTyAIqTpw) and [Zorian's Github](zorian15.GitHub.io)
 - basic-models.ipynb uses the cleaned data from Dinosaur Data Exploration + Model Development.ipynb to create a basic model (Logistic Regression)
