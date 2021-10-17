@@ -3,10 +3,8 @@
 
 
 Source code for the OpenCV Object Detection in Games series on the **Learn Code By Gaming** YouTube channel.
-
-[**Heavy Inspiration from the following codebase!**](https://github.com/learncodebygaming/opencv_tutorials)
-
-[**His Nifty tutorials can be found here on YouTube**](https://www.youtube.com/playlist?list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI)
+- [**Heavy Inspiration from the following codebase!**](https://github.com/learncodebygaming/opencv_tutorials)
+- [**His Nifty tutorials can be found here on YouTube**](https://www.youtube.com/playlist?list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI)
 
 ---
 
