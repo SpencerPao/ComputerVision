@@ -28,6 +28,7 @@ def main():
         # get an updated image of the game
         screenshot = wincap.get_screenshot()
         screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+        screenshot = cv.Canny(screenshot, threshold1=100, threshold2=200)
         result = model.predict(screenshot.flatten().reshape(1, 417600))
         print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
