@@ -9,7 +9,10 @@ Source code for the OpenCV Object Detection in Games series on the **Learn Code 
 [**His Nifty tutorials can be found here on YouTube**](https://www.youtube.com/playlist?list=PL1m2M8LQlzfKtkKq2lK5xko4X-8EZzFPI)
 
 ---
-Major Thanks to Zorian for helping set up the Modeling Notebook. You can check him out: [Zorian's YouTube Channel](https://www.youtube.com/channel/UC0oMmMPgGVqnDqNTyAIqTpw) and [Zorian's Github](https://zorian15.GitHub.io)
+
+### Major Thanks to Zorian for helping set up the Modeling Notebook. 
+You can check him out: [Zorian's YouTube Channel](https://www.youtube.com/channel/UC0oMmMPgGVqnDqNTyAIqTpw) and [Zorian's Github](https://zorian15.GitHub.io)
+
 ---
 ## The Link to the Dinosaur Game can be found [**Here**](https://trex-runner.com/)
 ![Dinosaur_Image_Screenshot](Dinosaur_Screenshot.PNG) 
