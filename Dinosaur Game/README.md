@@ -1,5 +1,11 @@
 # << IN PROGRESS >>
-# Computer Vision Model for beating the Dinosaur Game
+---
+# YouTube Videos associated with this entire Codebase:
+- [YouTube video link Part 1 (Capturing Image Data)](https://youtu.be/6iekqFLAxl0)
+- [YouTube video link Part 2 (Cleaning image Data and Live Testing with Basic Model)](https://youtu.be/K9XMAnwO7wM)
+
+---
+## Computer Vision Model for beating the Dinosaur Game
 
 
 Source code for the OpenCV Object Detection in Games series on the **Learn Code By Gaming** YouTube channel.
