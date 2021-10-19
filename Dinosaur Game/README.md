@@ -27,8 +27,8 @@ You can check him out:
 
 ## Real_Time_Test.py
 - Use script once model has been trained.
-- Tests to see if trained model beats various obstacles and maybe even the game!
-- Still under construction.
+- Runs trained model in the **Existing/Models/** folder
+- run **python Real_Time_test.py** to see if trained model beats various obstacles and maybe even the game!
 
 ### Window Capture Folder
 - Tools for taking a screen shot for the dinosaur game. I will be using this to store the appropriate PNG files into its associated folders (Jump, Duck).
