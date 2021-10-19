@@ -4,13 +4,13 @@ import cv2 as cv
 import win32con as con
 import numpy as np
 import os
-from time import time
+from time import time, sleep
 from utils.windowcapture import WindowCapture
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-file_name = "Data/screenshots.npy"
-file_name2 = "Data/command_keys.npy"
+file_name = "Data/screenshots_2.npy"
+file_name2 = "Data/command_keys_2.npy"
 
 
 def get_data():
@@ -59,7 +59,8 @@ def main():
         if key == con.VK_UP:
             print("Up Arrow Key")
             image_data.append(screenshot)
-            target.append(key)
+            target.append(key)  # Wait for 0.658 seconds.
+            sleep(0.2)
             # Make sure to jump only using the up arrow key
             # Since we are using the space bar key for the start of the program.
             # Once up arrow key goes up -> we want to record screenshot
@@ -70,9 +71,27 @@ def main():
             target.append(key)
             # Attach screen shot
             # Attach record key.
+        else:
+            target.append(-1)
+            image_data.append(screenshot)
     print("Done")
-    image_data = image_data[:-10]
-    target = target[:-10]
+    to_remove = 0  # value to remove before last -1
+    v = 0  # 2nd value to check to break loop
+    ta = False  # Target acquired.
+    for t in target[::-1]:
+        if t == -1:
+            to_remove += 1
+        elif t != -1 and not ta:
+            ta = True
+            v = t
+            to_remove += 1
+        elif ta and t == v:
+            to_remove += 1
+        elif ta and t != v:
+            break
+
+    image_data = image_data[:-to_remove]
+    target = target[:-to_remove]
     # Save data.
     save_data(image_data, target)
     print("Finished Saving image data and target values.")
