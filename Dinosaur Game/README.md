@@ -26,7 +26,7 @@ You can check him out:
 ![Dinosaur_Image_Screenshot](Dinosaur_Screenshot.PNG) 
 ## Requirements
 - Linux & Windows OS (Mac users might have to use a google collab notebook)
-- run pip install -r requirements.txt in shell. (To just run models)
+- run **pip install -r requirements.txt** in shell. (To just run models)
 
 ## Real_Time_Test.py
 - Use script once model has been trained.
