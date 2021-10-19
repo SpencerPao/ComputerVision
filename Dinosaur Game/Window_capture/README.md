@@ -16,3 +16,4 @@
 # Finished Collecting your data?
 - run **python Clean_data.py**. This will clean your screenshots and save to a numpy array.
 - You can now being the modeling portion seen in Dinosaur Game / Window Capture
+- The data cleaning portion is related to the following [YouTube video](https://youtu.be/K9XMAnwO7wM)
