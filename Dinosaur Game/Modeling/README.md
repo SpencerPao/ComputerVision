@@ -1,3 +1,5 @@
+# Checkout my [YouTube video](https://youtu.be/K9XMAnwO7wM) on this topic!
+---
 # Train your Model!
 - Logistic Regression (See basic-models.ipynb)
 - Resnet18? (Some known computer vision model for transfer learning)
