@@ -11,4 +11,8 @@
 # Numpy Arrays are too large to be stored on Github
 - When you run the program, numpy arrays will populate in the data folder.
 - Data/screenshots.npy: This is the screenshots array.
-- Data/command_keys.npy: Target Value (**32**: space, **38**: Up Arrow Key, **40**: Down Arrow Key)
+- Data/command_keys.npy: Target Value (**-1**: Do Nothing, **38**: Up Arrow Key, **40**: Down Arrow Key)
+
+# Finished Collecting your data?
+- run **python Clean_data.py**. This will clean your screenshots and save to a numpy array.
+- You can now being the modeling portion seen in Dinosaur Game / Window Capture
