@@ -9,8 +9,8 @@ from utils.windowcapture import WindowCapture
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-file_name = "Data/screenshots_2.npy"
-file_name2 = "Data/command_keys_2.npy"
+file_name = "Data/screenshots.npy"
+file_name2 = "Data/command_keys.npy"
 
 
 def get_data():
