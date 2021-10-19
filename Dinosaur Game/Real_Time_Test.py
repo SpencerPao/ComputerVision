@@ -30,8 +30,10 @@ def main():
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
         if result == 38:  # Jump!
             keyboard.send('up')
-        if result == 40:  # duck!
+        elif result == 40:  # duck!
             keyboard.send('down')
+        else:
+            pass
         # End simulation
         key = keys()
         if key == 0x51:
