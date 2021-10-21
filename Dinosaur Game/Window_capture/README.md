@@ -14,7 +14,6 @@
 - Data/command_keys.npy: Target Value (**-1**: Do Nothing, **38**: Up Arrow Key, **40**: Down Arrow Key)
 
 # Finished Collecting your data?
-- run **python Clean_data.py**. This will clean your screenshots and save to a numpy array.
 - You can now being the modeling portion seen in Dinosaur Game / Window Capture
 - The data capturing portion is related to the following [YouTube video](https://youtu.be/6iekqFLAxl0)
 - The data cleaning portion is related to the following [YouTube video](https://youtu.be/K9XMAnwO7wM)
