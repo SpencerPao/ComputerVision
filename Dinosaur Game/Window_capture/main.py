@@ -14,7 +14,7 @@ file_name = "Data/screenshots.npy"
 file_name2 = "Data/command_keys.npy"
 
 
-def get_data():
+def get_data() -> None:
     """Function obtained from ClarityCoders:
     https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
     if os.path.isfile(file_name):
@@ -28,7 +28,7 @@ def get_data():
     return image_data, targets
 
 
-def save_data(image_data, targets):
+def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
     """Function obtained from ClarityCoders: https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
     np.save(file_name, image_data)
     np.save(file_name2, targets)
@@ -51,6 +51,26 @@ def canny_images(data: np.ndarray) -> List[int]:
     return canny_arr
 
 
+def remove_faults(target: List[int]) -> int:
+    """Remove last moments of failure from target."""
+    targ = target
+    to_remove = 0  # value to remove before last -1
+    v = 0  # 2nd value to check to break loop
+    ta = False  # Target acquired.
+    for t in targ[::-1]:
+        if t == -1:
+            to_remove += 1
+        elif t != -1 and not ta:
+            ta = True
+            v = t
+            to_remove += 1
+        elif ta and t == v:
+            to_remove += 1
+        elif ta and t != v:
+            break
+    return to_remove
+
+
 def main():
     """Houses main function."""
     image_data, target = get_data()
@@ -66,7 +86,6 @@ def main():
             break
     loop_time = time()
     while(True):
-        # Get screenshot
         screenshot = wincap.get_screenshot()
         print("FPS {}".format(1 / (time() - loop_time)))
         loop_time = time()
@@ -77,42 +96,24 @@ def main():
         if key == con.VK_UP:
             print("Up Arrow Key")
             image_data.append(screenshot)
-            target.append(key)  # Wait for 0.658 seconds.
-            sleep(0.2)
-            # Make sure to jump only using the up arrow key
-            # Since we are using the space bar key for the start of the program.
-            # Once up arrow key goes up -> we want to record screenshot
-            # and record key.
+            target.append(key)
+            sleep(0.2)  # decided to do 0.2 second wait.
         elif key == con.VK_DOWN:
             print("Down Arrow Key Initiated.")
             image_data.append(screenshot)
             target.append(key)
-            # Attach screen shot
-            # Attach record key.
         else:
             target.append(-1)
             image_data.append(screenshot)
     print("Done")
-    to_remove = 0  # value to remove before last -1
-    v = 0  # 2nd value to check to break loop
-    ta = False  # Target acquired.
-    for t in target[::-1]:
-        if t == -1:
-            to_remove += 1
-        elif t != -1 and not ta:
-            ta = True
-            v = t
-            to_remove += 1
-        elif ta and t == v:
-            to_remove += 1
-        elif ta and t != v:
-            break
+
+    to_remove = remove_faults(target)
     '''Removing the error triggers and residual screenshots.'''
     image_data = image_data[:-to_remove]
     target = target[:-to_remove]
-    '''Comment If else statement below if you want to capture no action screenshots'''
-    # Capturing elements that will be thrown out (in this case -1)
-    # IF you don't want non - actions to be captured.
+    '''Comment If else statement below if you want to capture no action screenshots
+    Capturing elements that will be thrown out (in this case -1)
+    IF you don't want non - actions to be captured.'''
     if len(target) > 0:
         res_list = [i for i, value in enumerate(target) if value == -1]
         print("Grey Scaling...")
@@ -130,6 +131,9 @@ def main():
         print("Finished Saving image data and target values.")
     else:
         print("No Data to save...")
+
+    '''Uncomment this section if you want no-action records. \
+    Make sure to comment out the above if else statement.'''
     # if len(target) > 0:
     #   save_data(image_data, target)
     # else:
