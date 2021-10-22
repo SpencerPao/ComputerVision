@@ -140,7 +140,6 @@ def main():
     #   print("Canny Edge Detection...")
     #   c_imgs = np.asarray(canny_images(gray_images))
     #   images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(c_imgs.shape[0], 417600))
-    # flatten images then converted to dataframe for easier removal of idx
     # # Save data.
     #   print(len(target), images_flat.shape)
     #   print(np.unique(target, return_counts=True))
