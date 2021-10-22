@@ -135,6 +135,15 @@ def main():
     '''Uncomment this section if you want no-action records. \
     Make sure to comment out the above if else statement.'''
     # if len(target) > 0:
+    #   print("Grey Scaling...")
+    #   gray_images = npy_2_greyscale(image_data)
+    #   print("Canny Edge Detection...")
+    #   c_imgs = np.asarray(canny_images(gray_images))
+    #   images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(c_imgs.shape[0], 417600))
+    # flatten images then converted to dataframe for easier removal of idx
+    # # Save data.
+    #   print(len(target), images_flat.shape)
+    #   print(np.unique(target, return_counts=True))
     #   save_data(image_data, target)
     # else:
     #   print("No Data to save...")
