@@ -14,20 +14,6 @@ file_name = "Data/screenshots.npy"
 file_name2 = "Data/command_keys.npy"
 
 
-# def get_data() -> None:
-#     """Function obtained from ClarityCoders:
-#     https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
-#     if os.path.isfile(file_name):
-#         print('File exists, loading previous data!')
-#         image_data = list(np.load(file_name, allow_pickle=True))
-#         targets = list(np.load(file_name2, allow_pickle=True))
-#     else:
-#         print('File does not exist, starting fresh!')
-#         image_data = []
-#         targets = []
-#     return image_data, targets
-
-
 def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
     """Function obtained from ClarityCoders: https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
     if os.path.isfile(file_name):
