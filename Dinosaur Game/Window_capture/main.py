@@ -14,24 +14,40 @@ file_name = "Data/screenshots.npy"
 file_name2 = "Data/command_keys.npy"
 
 
-def get_data() -> None:
-    """Function obtained from ClarityCoders:
-    https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
-    if os.path.isfile(file_name):
-        print('File exists, loading previous data!')
-        image_data = list(np.load(file_name, allow_pickle=True))
-        targets = list(np.load(file_name2, allow_pickle=True))
-    else:
-        print('File does not exist, starting fresh!')
-        image_data = []
-        targets = []
-    return image_data, targets
+# def get_data() -> None:
+#     """Function obtained from ClarityCoders:
+#     https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
+#     if os.path.isfile(file_name):
+#         print('File exists, loading previous data!')
+#         image_data = list(np.load(file_name, allow_pickle=True))
+#         targets = list(np.load(file_name2, allow_pickle=True))
+#     else:
+#         print('File does not exist, starting fresh!')
+#         image_data = []
+#         targets = []
+#     return image_data, targets
 
 
 def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
     """Function obtained from ClarityCoders: https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
-    np.save(file_name, image_data)
-    np.save(file_name2, targets)
+    if os.path.isfile(file_name):
+        print('File exists, saving to previous data!')
+        print("Saving Image Data...")
+        i_f = np.load(file_name, allow_pickle=True)
+        to_save_images = np.vstack((i_f, image_data))
+        print("Large Image Shape:", i_f.shape, "Current Image Shape:",
+              image_data.shape, "Combined Image Shape:", to_save_images.shape)
+        np.save(file_name, to_save_images)
+
+        print("Saving Target Data...")
+        t = np.load(file_name2, allow_pickle=True)
+        print("Loaded Length Command Key:", len(t), "Current Length Command Key:",
+              len(targets), "Combined Command Key Length", len(np.append(t, targets)))
+        np.save(file_name2, np.append(t, targets))
+    else:
+        print('File does not exist, starting fresh!')
+        np.save(file_name, image_data)
+        np.save(file_name2, targets)
 
 
 def npy_2_greyscale(data: np.ndarray) -> List[int]:
@@ -71,9 +87,21 @@ def remove_faults(target: List[int]) -> int:
     return to_remove
 
 
+def crop_images(image_data: List[int]) -> List[int]:
+    """image_data : ndarray that houses snapshot data.
+    Crops image to capture further pixel capture.
+    Comment this function out if want images in original form."""
+    crop_pic = []
+    for img in image_data:  # dimensions of image tuned by hand. (see exploration notebook)
+        crop_pic.append(img[0:img.shape[0], 250:700])
+    return crop_pic
+
+
 def main():
     """Houses main function."""
-    image_data, target = get_data()
+    # image_data, target = get_data()
+    image_data = []
+    target = []
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
     while True:
         print("Press 'Space' to start -- else 'q' to quit program.")
@@ -114,38 +142,45 @@ def main():
     '''Comment If else statement below if you want to capture no action screenshots
     Capturing elements that will be thrown out (in this case -1)
     IF you don't want non - actions to be captured.'''
-    if len(target) > 0:
-        res_list = [i for i, value in enumerate(target) if value == -1]
-        print("Grey Scaling...")
-        gray_images = npy_2_greyscale(image_data)
-        print("Canny Edge Detection...")
-        c_imgs = np.asarray(canny_images(gray_images))
-        images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(c_imgs.shape[0], 417600))
-        # flatten images then converted to dataframe for easier removal of idx
-        images_flat = images_flat.drop(images_flat.index[res_list])
-        target = np.delete(target, res_list)
-        # Save data.
-        print(len(target), images_flat.shape)
-        print(np.unique(target, return_counts=True))
-        save_data(image_data, target)
-        print("Finished Saving image data and target values.")
-    else:
-        print("No Data to save...")
+    # if len(target) > 0:
+    #     res_list = [i for i, value in enumerate(target) if value == -1]
+    #     print("Grey Scaling...")
+    #     # For cropping - comment out if want full view.
+    #     image_data = crop_images(image_data)  # Cropped
+    #     gray_images = npy_2_greyscale(image_data)
+    #     print("Canny Edge Detection...")
+    #     c_imgs = np.asarray(canny_images(gray_images))
+    #     images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
+    #         c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
+    #     # flatten images then converted to dataframe for easier removal of idx
+    #     images_flat = images_flat.drop(images_flat.index[res_list])
+    #     target = np.delete(target, res_list)
+    #     # Save data.
+    #     print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
+    #     print("Dimensions of target: ", np.unique(target, return_counts=True))
+    #     save_data(images_flat, target)
+    #     print("Finished Saving image data and target values.")
+    # else:
+    #     print("No Data to save...")
 
     '''Uncomment this section if you want no-action records. \
     Make sure to comment out the above if else statement.'''
-    # if len(target) > 0:
-    #   print("Grey Scaling...")
-    #   gray_images = npy_2_greyscale(image_data)
-    #   print("Canny Edge Detection...")
-    #   c_imgs = np.asarray(canny_images(gray_images))
-    #   images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(c_imgs.shape[0], 417600))
-    # # Save data.
-    #   print(len(target), images_flat.shape)
-    #   print(np.unique(target, return_counts=True))
-    #   save_data(image_data, target)
-    # else:
-    #   print("No Data to save...")
+    if len(target) > 0:
+        print("Grey Scaling...")
+        # For cropping - comment out if want full view.
+        image_data = crop_images(image_data)  # Cropped
+        gray_images = npy_2_greyscale(image_data)
+        print("Canny Edge Detection...")
+        c_imgs = np.asarray(canny_images(gray_images))
+        images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
+            c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
+        # Save data.
+        print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
+        print("Dimensions of target: ", np.unique(target, return_counts=True))
+        save_data(images_flat, target)
+        print("Finished Saving image data and target values.")
+    else:
+        print("No Data to save...")
 
 
 if __name__ == '__main__':
