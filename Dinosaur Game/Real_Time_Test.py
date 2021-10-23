@@ -4,7 +4,6 @@ from Window_capture.utils.getkeys import keys
 import cv2 as cv
 import pickle
 import keyboard
-
 """CHANGE FILE PATH"""
 model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
 
@@ -23,14 +22,18 @@ def main():
     while(True):
         # get an updated image of the game
         screenshot = wincap.get_screenshot()
-        screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
-        screenshot = cv.Canny(screenshot, threshold1=100, threshold2=200)
-        result = model.predict(screenshot.flatten().reshape(1, 417600))
+        # Crop image
+        screenshot = screenshot[0:screenshot.shape[0], 250:700, :]
+        gray_images = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+        screenshot = cv.Canny(gray_images, threshold1=100, threshold2=200)
+        # 417600 for full view (comment line 121) 129600
+        result = model.predict(screenshot.flatten().reshape(1, 129600))
+        # flatten images then converted to dataframe for easier removal of idx
         print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
-        if result == 38:  # Jump!
+        if result[0] == 38:  # Jump!
             keyboard.send('up')
-        elif result == 40:  # duck!
+        elif result[0] == 40:  # duck!
             keyboard.send('down')
         else:
             pass
