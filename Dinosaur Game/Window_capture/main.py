@@ -149,7 +149,7 @@ def main():
     # else:
     #     print("No Data to save...")
 
-    '''Uncomment this section if you want no-action records. \
+    '''Comment this section if you want no-action records. \
     Make sure to comment out the above if else statement.'''
     if len(target) > 0:
         print("Grey Scaling...")
