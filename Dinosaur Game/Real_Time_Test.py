@@ -5,10 +5,17 @@ import cv2 as cv
 import pickle
 import keyboard
 """CHANGE FILE PATH"""
-model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
-
+#model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
+model = torch.load('nn.model')
 print("Model Loaded.")
 
+def map_keys_rev(pred_vec):
+    """ Take a vector of classifications and return keyboard outputs """
+    result = torch.zeros_like(pred_vec)
+    key_dict = {0: -1, 1: 38, 2: 40}
+    for i in range(label_vec.shape[0]):
+        result[i] = key_dict[label_vec[i]]
+    return result
 
 def main():
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
@@ -27,7 +34,8 @@ def main():
         gray_images = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
         screenshot = cv.Canny(gray_images, threshold1=100, threshold2=200)
         # 417600 for full view (comment line 121) 129600
-        result = model.predict(screenshot.flatten().reshape(1, 129600))
+        result = map_keys_rev(model(torch.Tensor(screenshot.flatten().reshape(1, 129600))))
+        # result = model.predict(screenshot.flatten().reshape(1, 129600))
         # flatten images then converted to dataframe for easier removal of idx
         print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
