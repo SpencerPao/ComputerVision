@@ -1,6 +1,7 @@
 """Uses trained model to play dinosaur game."""
 from Window_capture.utils.windowcapture import WindowCapture
 from Window_capture.utils.getkeys import keys
+from model import BasicNNet
 import cv2 as cv
 import pickle
 import keyboard
