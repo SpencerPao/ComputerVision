@@ -13,8 +13,8 @@ def map_keys_rev(pred_vec):
     """ Take a vector of classifications and return keyboard outputs """
     result = torch.zeros_like(pred_vec)
     key_dict = {0: -1, 1: 38, 2: 40}
-    for i in range(label_vec.shape[0]):
-        result[i] = key_dict[label_vec[i]]
+    for i in range(pred_vec.shape[0]):
+        result[i] = key_dict[pred_vec[i]]
     return result
 
 def main():
