@@ -35,7 +35,8 @@ def main():
         gray_images = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
         screenshot = cv.Canny(gray_images, threshold1=100, threshold2=200)
         # 417600 for full view (comment line 121) 129600
-        result = map_keys_rev(model(torch.Tensor(screenshot.flatten().reshape(1, 129600))))
+        preds = model(torch.Tensor(screenshot.flatten().reshape(1, 129600)))
+        _, result = torch.max(preds.data, 1)
         # result = model.predict(screenshot.flatten().reshape(1, 129600))
         # flatten images then converted to dataframe for easier removal of idx
         print("Prediction is: ", result)
