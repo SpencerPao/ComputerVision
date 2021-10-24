@@ -1,5 +1,9 @@
+import torch
+
+
 class BasicNNet(torch.nn.Module):
     """ Basic NNet for playing the dino game """
+
     def __init__(self, input_size):
         super().__init__()
         self.layer1 = torch.nn.Linear(input_size, 500)

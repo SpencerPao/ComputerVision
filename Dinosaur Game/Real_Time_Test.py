@@ -4,17 +4,20 @@ from Window_capture.utils.getkeys import keys
 from model import BasicNNet
 import cv2 as cv
 import pickle
+import torch
 import keyboard
 """CHANGE FILE PATH"""
-#model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
+# model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
 model = torch.load('nn.model')
 print("Model Loaded.")
+
 
 def map_keys_rev(pred_vec):
     """ Take a vector of classifications and return keyboard outputs """
     key_dict = {0.: -1, 1.: 38, 2.: 40}
     result = key_dict[int(pred_vec[0])]
     return result
+
 
 def main():
     wincap = WindowCapture('T-Rex Game – Google Dino Run - Google Chrome')
@@ -40,9 +43,10 @@ def main():
         # flatten images then converted to dataframe for easier removal of idx
         print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
-        if result[0] == 38:  # Jump!
+        # Take out subscripts. for pytorch model. [0]
+        if result == 38:  # Jump!
             keyboard.send('up')
-        elif result[0] == 40:  # duck!
+        elif result == 40:  # duck!
             keyboard.send('down')
         else:
             pass
