@@ -15,7 +15,9 @@ file_name2 = "Data/command_keys.npy"
 
 
 def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
-    """Function obtained from ClarityCoders: https://github.com/ClarityCoders/Fall-Guys-AI/blob/master/CreateData.py"""
+    """Save numpy array data and appends to existing numpy file.
+    If it does not exist, this creates a new file. The names of the files stated\
+    in the global variables."""
     if os.path.isfile(file_name):
         print('File exists, saving to previous data!')
         print("Saving Image Data...")
