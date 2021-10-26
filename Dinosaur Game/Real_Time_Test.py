@@ -3,8 +3,8 @@ from Window_capture.utils.windowcapture import WindowCapture
 from Window_capture.utils.getkeys import keys
 from model import BasicNNet
 import cv2 as cv
-import pickle
 import torch
+import time
 import keyboard
 """CHANGE FILE PATH"""
 # model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
@@ -36,12 +36,15 @@ def main():
         gray_images = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
         screenshot = cv.Canny(gray_images, threshold1=100, threshold2=200)
         # 417600 for full view (comment line 121) 129600
+        start_time = time.time()
         preds = model(torch.Tensor(screenshot.flatten().reshape(1, 129600)))
         _, result = torch.max(preds.data, 1)
         result = map_keys_rev(result)
+        print("Prediction time --- %s seconds ---" % (time.time() - start_time), "result: ", result)
+
         # result = model.predict(screenshot.flatten().reshape(1, 129600))
         # flatten images then converted to dataframe for easier removal of idx
-        print("Prediction is: ", result)
+        # print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
         # Take out subscripts. for pytorch model. [0]
         if result == 38:  # Jump!
