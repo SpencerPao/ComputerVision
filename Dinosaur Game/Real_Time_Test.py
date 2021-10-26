@@ -5,8 +5,11 @@ import cv2 as cv
 import pickle
 import keyboard
 import time
+import xgboost as xgb
 """CHANGE FILE PATH"""
-model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
+# model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
+# model = pickle.load(open("Modeling/Existing_Models/xgboost_dino_2.pkl", 'rb'))  # horrible.
+model = pickle.load(open("Modeling/Existing_Models/xgboost_dino_SMOTE.pkl", 'rb'))  # horrible.
 
 print("Model Loaded.")
 
@@ -28,15 +31,18 @@ def main():
         gray_images = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
         screenshot = cv.Canny(gray_images, threshold1=100, threshold2=200)
         # 417600 for full view (comment line 121) 129600
+        screenshot = xgb.DMatrix(screenshot.flatten().reshape(1, 129600))
         start_time = time.time()
-        result = model.predict(screenshot.flatten().reshape(1, 129600))
-        print("Prediction time --- %s seconds ---" % (time.time() - start_time), "result: ", result)
+        # result = model.predict(screenshot.flatten().reshape(1, 129600))
+        result = model.predict(screenshot)
+        print("Prediction time --- %s seconds ---" %
+              (time.time() - start_time), "result: ", result)
         # flatten images then converted to dataframe for easier removal of idx
         # print("Prediction is: ", result)
         # https://stackabuse.com/guide-to-pythons-keyboard-module/
-        if result[0] == 38:  # Jump!
+        if result[0] == 1:  # Jump!
             keyboard.send('up')
-        elif result[0] == 40:  # duck!
+        elif result[0] == 2:  # duck!
             keyboard.send('down')
         else:
             pass
@@ -45,6 +51,18 @@ def main():
         if key == 0x51:
             cv.destroyAllWindows()
             break
+
+        # if result[0] == 38:  # Jump!
+        #     keyboard.send('up')
+        # elif result[0] == 40:  # duck!
+        #     keyboard.send('down')
+        # else:
+        #     pass
+        # # End simulation
+        # key = keys()
+        # if key == 0x51:
+        #     cv.destroyAllWindows()
+        #     break
     print("Exit out of loop.")
 
 
