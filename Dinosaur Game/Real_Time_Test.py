@@ -8,7 +8,7 @@ import time
 import keyboard
 """CHANGE FILE PATH"""
 # model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
-model = torch.load('nn.model')
+model = torch.load('Modeling/Existing_Models/nn.model')
 print("Model Loaded.")
 
 
