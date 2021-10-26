@@ -11,4 +11,3 @@ __pycache__
 nn.model
 Modeling/Existing_Models/nn.model
 xgboost_dino.pkl
-*.pkl

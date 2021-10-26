@@ -6,11 +6,12 @@ import pickle
 import keyboard
 import time
 import xgboost as xgb
+
 """CHANGE FILE PATH"""
 # model = pickle.load(open("Modeling/Existing_Models/log-reg.pkl", 'rb'))  # horrible.
 # model = pickle.load(open("Modeling/Existing_Models/xgboost_dino_2.pkl", 'rb'))  # horrible.
 model = pickle.load(open("Modeling/Existing_Models/xgboost_dino_SMOTE.pkl", 'rb'))  # horrible.
-
+model.set_param({'nthread': 2})
 print("Model Loaded.")
 
 
