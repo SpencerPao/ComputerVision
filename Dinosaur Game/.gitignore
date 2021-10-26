@@ -9,3 +9,4 @@ __pycache__
 */.ipynb_checkpoints/*
 *.zip
 nn.model
+Modeling/Existing_Models/nn.model
