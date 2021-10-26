@@ -10,3 +10,5 @@ __pycache__
 *.zip
 nn.model
 Modeling/Existing_Models/nn.model
+xgboost_dino.pkl
+*.pkl
