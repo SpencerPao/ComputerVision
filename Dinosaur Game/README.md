@@ -15,7 +15,7 @@ Source code for the OpenCV Object Detection in Games series on the **Learn Code 
 ---
 
 ### Major Thanks to Zorian for helping set up the Modeling Notebook. 
-His work can be found in the Modeling/basic-models.ipynb
+His work can be found in the Modeling/basic-models.ipynb & Modeling/pytorch-dino-game.ipynb
 
 You can check him out: 
   - [Zorian's YouTube Channel](https://www.youtube.com/channel/UC0oMmMPgGVqnDqNTyAIqTpw)
