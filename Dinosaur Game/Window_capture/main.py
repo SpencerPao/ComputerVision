@@ -61,18 +61,25 @@ def remove_faults(target: List[int]) -> int:
     to_remove = 0  # value to remove before last -1
     v = 0  # 2nd value to check to break loop
     ta = False  # Target acquired.
+    if len(np.unique(target)) > 2:  # jump and -1
+        for t in targ[::-1]:
+            if t == -1:
+                to_remove += 1
+            elif t != -1 and not ta:
+                ta = True
+                v = t
+                to_remove += 1
+            elif ta and t == v:
+                to_remove += 1
+            elif ta and t != v:
+                break
+        return to_remove
     for t in targ[::-1]:
         if t == -1:
             to_remove += 1
-        elif t != -1 and not ta:
-            ta = True
-            v = t
-            to_remove += 1
-        elif ta and t == v:
-            to_remove += 1
-        elif ta and t != v:
+        else:
             break
-    return to_remove
+    return to_remove  # remove just -1 from most recent array
 
 
 def crop_images(image_data: List[int]) -> List[int]:
@@ -130,30 +137,8 @@ def main():
     '''Comment If else statement below if you want to capture no action screenshots
     Capturing elements that will be thrown out (in this case -1)
     IF you don't want non - actions to be captured.'''
-    # if len(target) > 0:
-    #     res_list = [i for i, value in enumerate(target) if value == -1]
-    #     print("Grey Scaling...")
-    #     # For cropping - comment out if want full view.
-    #     image_data = crop_images(image_data)  # Cropped
-    #     gray_images = npy_2_greyscale(image_data)
-    #     print("Canny Edge Detection...")
-    #     c_imgs = np.asarray(canny_images(gray_images))
-    #     images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
-    #         c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
-    #     # flatten images then converted to dataframe for easier removal of idx
-    #     images_flat = images_flat.drop(images_flat.index[res_list])
-    #     target = np.delete(target, res_list)
-    #     # Save data.
-    #     print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
-    #     print("Dimensions of target: ", np.unique(target, return_counts=True))
-    #     save_data(images_flat, target)
-    #     print("Finished Saving image data and target values.")
-    # else:
-    #     print("No Data to save...")
-
-    '''Comment this section if you want no-action records. \
-    Make sure to comment out the above if else statement.'''
     if len(target) > 0:
+        res_list = [i for i, value in enumerate(target) if value == -1]
         print("Grey Scaling...")
         # For cropping - comment out if want full view.
         image_data = crop_images(image_data)  # Cropped
@@ -162,6 +147,9 @@ def main():
         c_imgs = np.asarray(canny_images(gray_images))
         images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
             c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
+        # flatten images then converted to dataframe for easier removal of idx
+        images_flat = images_flat.drop(images_flat.index[res_list])
+        target = np.delete(target, res_list)
         # Save data.
         print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
         print("Dimensions of target: ", np.unique(target, return_counts=True))
@@ -169,6 +157,25 @@ def main():
         print("Finished Saving image data and target values.")
     else:
         print("No Data to save...")
+
+    '''Comment this section if you want no-action records. \
+    Make sure to comment out the above if else statement.'''
+    # if len(target) > 0:
+    #     print("Grey Scaling...")
+    #     # For cropping - comment out if want full view.
+    #     image_data = crop_images(image_data)  # Cropped
+    #     gray_images = npy_2_greyscale(image_data)
+    #     print("Canny Edge Detection...")
+    #     c_imgs = np.asarray(canny_images(gray_images))
+    #     images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
+    #         c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
+    #     # Save data.
+    #     print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
+    #     print("Dimensions of target: ", np.unique(target, return_counts=True))
+    #     save_data(images_flat, target)
+    #     print("Finished Saving image data and target values.")
+    # else:
+    #     print("No Data to save...")
 
 
 if __name__ == '__main__':
