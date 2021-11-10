@@ -10,8 +10,8 @@ from typing import List
 import pandas as pd
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-file_name = "Data/screenshots.npy"
-file_name2 = "Data/command_keys.npy"
+file_name = "Data/screenshots_retry.npy"
+file_name2 = "Data/command_keys_retry.npy"
 
 
 def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
@@ -88,7 +88,7 @@ def crop_images(image_data: List[int]) -> List[int]:
     Comment this function out if want images in original form."""
     crop_pic = []
     for img in image_data:  # dimensions of image tuned by hand. (see exploration notebook)
-        crop_pic.append(img[0:img.shape[0], 250:700])
+        crop_pic.append(img[0:img.shape[0], 375:600])
     return crop_pic
 
 
@@ -134,6 +134,13 @@ def main():
     '''Removing the error triggers and residual screenshots.'''
     image_data = image_data[:-to_remove]
     target = target[:-to_remove]
+    ind = [i for i, value in enumerate(target) if value == 38]
+    s = []
+    for i in ind:
+        s.append(i-2)
+        s.append(i-1)
+    target = np.array(target)
+    target[s] = 38
     '''Comment If else statement below if you want to capture no action screenshots
     Capturing elements that will be thrown out (in this case -1)
     IF you don't want non - actions to be captured.'''
@@ -143,18 +150,18 @@ def main():
         # For cropping - comment out if want full view.
         image_data = crop_images(image_data)  # Cropped
         gray_images = npy_2_greyscale(image_data)
-        print("Canny Edge Detection...")
+        # print("Canny Edge Detection...")
         c_imgs = np.asarray(canny_images(gray_images))
         images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
-            c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
-        # flatten images then converted to dataframe for easier removal of idx
+            c_imgs.shape[0], 64800))  # 417600 for full view (comment line 121)
+        # # flatten images then converted to dataframe for easier removal of idx
         images_flat = images_flat.drop(images_flat.index[res_list])
         target = np.delete(target, res_list)
-        # Save data.
+        # # Save data.
         print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
         print("Dimensions of target: ", np.unique(target, return_counts=True))
         save_data(images_flat, target)
-        print("Finished Saving image data and target values.")
+        # print("Finished Saving image data and target values.")
     else:
         print("No Data to save...")
 
@@ -168,7 +175,7 @@ def main():
     #     print("Canny Edge Detection...")
     #     c_imgs = np.asarray(canny_images(gray_images))
     #     images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
-    #         c_imgs.shape[0], 129600))  # 417600 for full view (comment line 121)
+    #         c_imgs.shape[0], 64800))  # 417600 for full view (comment line 121)
     #     # Save data.
     #     print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
     #     print("Dimensions of target: ", np.unique(target, return_counts=True))
