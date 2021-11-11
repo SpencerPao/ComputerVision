@@ -10,8 +10,8 @@ from typing import List
 import pandas as pd
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-file_name = "Data/screenshots_retry.npy"
-file_name2 = "Data/command_keys_retry.npy"
+file_name = "Data/screenshots_retry1.npy"
+file_name2 = "Data/command_keys_retry1.npy"
 
 
 def save_data(image_data: np.ndarray, targets: np.ndarray) -> None:
@@ -88,7 +88,8 @@ def crop_images(image_data: List[int]) -> List[int]:
     Comment this function out if want images in original form."""
     crop_pic = []
     for img in image_data:  # dimensions of image tuned by hand. (see exploration notebook)
-        crop_pic.append(img[0:img.shape[0], 375:600])
+        # make sure to check if image(s) are calibrated
+        crop_pic.append(img[0:img.shape[0], 330:555])
     return crop_pic
 
 
@@ -146,22 +147,16 @@ def main():
     IF you don't want non - actions to be captured.'''
     if len(target) > 0:
         res_list = [i for i, value in enumerate(target) if value == -1]
-        print("Grey Scaling...")
-        # For cropping - comment out if want full view.
         image_data = crop_images(image_data)  # Cropped
         gray_images = npy_2_greyscale(image_data)
-        # print("Canny Edge Detection...")
         c_imgs = np.asarray(canny_images(gray_images))
         images_flat = pd.DataFrame(c_imgs[:, :, :].flatten().reshape(
             c_imgs.shape[0], 64800))  # 417600 for full view (comment line 121)
-        # # flatten images then converted to dataframe for easier removal of idx
         images_flat = images_flat.drop(images_flat.index[res_list])
         target = np.delete(target, res_list)
-        # # Save data.
         print('Length of target: ', len(target), 'Flat images dimensions:', images_flat.shape)
         print("Dimensions of target: ", np.unique(target, return_counts=True))
-        save_data(images_flat, target)
-        # print("Finished Saving image data and target values.")
+        save_data(image_data, target)
     else:
         print("No Data to save...")
 
