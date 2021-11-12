@@ -11,7 +11,7 @@
 # Numpy Arrays are too large to be stored on Github
 - When you run the program, numpy arrays will populate in the data folder.
 - Data/screenshots.npy: This is the screenshots array.
-- Data/command_keys.npy: Target Value (**-1**: Do Nothing, **38**: Up Arrow Key, **40**: Down Arrow Key)
+- Data/command_keys.npy: Target Value (**-1**: Do Nothing, **38**: Up Arrow Key, **40**: Down Arrow Key): I later associated -1 with 0 and 38 with 1. I did not do the ducking motion in the final model development piece because of redundancy.
 
 # Finished Collecting your data?
 - You can now being the modeling portion seen in Dinosaur Game / Window Capture
