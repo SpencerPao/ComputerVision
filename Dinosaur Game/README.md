@@ -38,9 +38,6 @@ You can check him out:
 ### Dinosaur_Game_Data_Exploration.ipynb 
 - Playing around with Windows OS and checking to see if functions work. 
 
-### Future Line of Work
-- Study which Computer vision model is most appropriate to beating the game at runtime
-- Train Model on Screenshots from the Window Capture Folder
-- Integrate with System (as a microservice)
-- Potentially deploy for others to use
+# Future line of work:
+- Reinforcement Learning
 
