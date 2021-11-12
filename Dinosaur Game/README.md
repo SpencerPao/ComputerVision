@@ -1,8 +1,7 @@
-# << IN PROGRESS >>
----
 # YouTube Videos associated with this entire Codebase:
 - [YouTube video link Part 1 (Capturing Image Data)](https://youtu.be/6iekqFLAxl0)
 - [YouTube video link Part 2 (Cleaning image Data and Live Testing with Basic Model)](https://youtu.be/K9XMAnwO7wM)
+- [Youtube video link Part 3 (Final Classification Video)](https://www.youtube.com/watch?v=PXQgRGPl4gw)
 
 ---
 ## Computer Vision Model for beating the Dinosaur Game
