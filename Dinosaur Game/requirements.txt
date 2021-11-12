@@ -5,6 +5,7 @@ astunparse==1.6.3
 async-generator==1.10
 attrs==21.2.0
 backcall==0.2.0
+bayesian-optimization==1.2.0
 bleach==4.1.0
 cached-property==1.5.2
 cachetools==4.2.4
@@ -15,6 +16,7 @@ clang==5.0
 cloudpickle==2.0.0
 colorama==0.4.4
 cycler==0.10.0
+Cython==0.29.24
 dataclasses==0.8
 decorator==4.4.2
 defusedxml==0.7.1
@@ -26,6 +28,8 @@ gast==0.4.0
 google-auth==2.3.0
 google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
+GPy==1.10.0
+GPyOpt==1.2.6
 grpcio==1.41.0
 h5py==3.1.0
 hyperopt==0.2.5
@@ -70,12 +74,14 @@ opt-einsum==3.3.0
 packaging==21.0
 pandas==1.1.5
 pandocfilters==1.5.0
+paramz==0.9.5
 parso==0.8.2
 pickleshare==0.7.5
 Pillow==8.3.2
 prometheus-client==0.11.0
 prompt-toolkit==3.0.20
 protobuf==3.18.1
+psutil==5.8.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 PyAutoGUI==0.9.53
