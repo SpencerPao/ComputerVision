@@ -17,4 +17,4 @@
 - You can now being the modeling portion seen in Dinosaur Game / Window Capture
 - The data capturing portion is related to the following [YouTube video](https://youtu.be/6iekqFLAxl0)
 - The data cleaning portion is related to the following [YouTube video](https://youtu.be/K9XMAnwO7wM)
-- Model evaluation portion can be founder [here.](https://www.youtube.com/watch?v=PXQgRGPl4gw)
+- Model evaluation portion can be found [here.](https://www.youtube.com/watch?v=PXQgRGPl4gw)
