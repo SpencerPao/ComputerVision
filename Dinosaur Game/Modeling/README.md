@@ -1,5 +1,3 @@
-# Checkout my [YouTube video](https://youtu.be/K9XMAnwO7wM) on this topic!
----
 # Requirements
 Choice of installation: _Note that everything is based on a windows machine_
 - pip -r install Regular_requirements.txt 
