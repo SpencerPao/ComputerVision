@@ -27,6 +27,9 @@ You can check him out:
 - Linux & Windows OS (Mac users might have to use a google collab notebook)
 - run **pip install -r requirements.txt** in shell. (All models that exist in the framework -- note that might have errors when downloading due to compatiblity: would need to run non compatible packages last.)
 
+# Files in current directory
+- models.py is used when loading in pytorch model. (not required as of this moment)
+
 ## Real_Time_Test.py
 - Use script once model has been trained.
 - Runs trained model in the **Existing/Models/** folder
