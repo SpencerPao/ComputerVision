@@ -1,8 +1,9 @@
 # Checkout my [YouTube video](https://youtu.be/K9XMAnwO7wM) on this topic!
 ---
-# Train your Model!
-- Logistic Regression (See basic-models.ipynb)
-- Resnet18? (Some known computer vision model for transfer learning)
+# Requirements
+Choice of installation: _Note that everything is based on a windows machine_
+- pip -r install Regular_requirements.txt 
+- pip -r install Bayes_requirements.txt 
 
 ## Assumptions (Check out Dinosaur Game/Window_Capture):
 - Dinosaur data has been populated and is ready to tune a model.
@@ -12,3 +13,18 @@
 - Training model on screenshot data
 - Check out basic-models.ipynb -- Major thanks to Zorian for helping set up this notebook. You can check him out: [Zorian's YouTube Channel](https://www.youtube.com/channel/UC0oMmMPgGVqnDqNTyAIqTpw) and [Zorian's Github](https://zorian15.GitHub.io)
 - basic-models.ipynb uses the cleaned data from Dinosaur Data Exploration + Model Development.ipynb to create a basic model (Logistic Regression)
+- 
+# Notebooks 
+- basic-models.ipynb : Logistic Model development.
+- Dinosaur Data Exploration + Model Development.ipynb : Exploring what data snapshots look like (Used for calibration purposes -- need to edit main.py on transforms)
+- XGBoost Bayes.ipynb : A general example on how to utilize bayesian applications with XGBoost (Notebook format)
+- XGBoost_Dino_Game.ipynb : Native XGBoost model to use (fastest inference) -- only use for single use parameters, obtained from gridsearchCV
+- pytorch-dino-game.ipynb : Neural network framework
+- XGBoost_Dino_Game_Eval_Tune_Binary.ipynb : Used for binary outcomes (General notebook)
+- XGBoost_Dino_Game_Eval_Tune_Grid_MultiClass.ipynb : Used for multi-class outcomes (General notebook)
+
+# Scripts
+- xgboost_bayesian_opt_binary.py: CPU / GPU compatible for training xgboost with bayesian optimization (Binary)
+- xgboost_bayesian_opt_multiclass.py: CPU / GPU compatible for training xgboost with bayesian optimization (Multi-class)
+- xgboost_single_dtrain.py : Similar to the XGBoost_Dino_Game_Eval_Tune_Binary.ipynb but in script format.
+- xgboost_train.py : Similar to XGBoost_Dino_Game_Eval_Tune_Binary but has gridsearchCV in scikit-learn format (Long inference time)
