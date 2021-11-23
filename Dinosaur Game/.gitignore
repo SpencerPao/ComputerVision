@@ -13,3 +13,6 @@ Modeling/Existing_Models/nn.model
 xgboost_dino.pkl
 *.pkl
 *.joblib
+Ec2/
+Modelinggpyopt_xgb\
+Modeling/
