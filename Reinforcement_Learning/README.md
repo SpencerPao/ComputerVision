@@ -9,4 +9,4 @@
 - pip install -r requirements.txt
 
 # Files
-- Selenium_Notebook_Test_URL_Requests.ipynb is prototyping the Reinforcement learning algorithm (includes output and explanations); An object oriented framework will be coded soon.
+- *Selenium_Notebook_Test_URL_Requests.ipynb* is prototyping the Reinforcement learning algorithm (includes output and explanations); An object oriented framework will be coded soon.
