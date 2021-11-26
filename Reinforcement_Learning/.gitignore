@@ -1,3 +1,7 @@
+chrome_driver/
+
+
+###### GitHub generated ignore items #####
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
