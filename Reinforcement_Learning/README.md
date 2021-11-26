@@ -5,7 +5,7 @@
 - Create Object Oriented Programming procedures for reinforcement learning
 
 # Requirements
-- Python version: 3.6.13
+- Python version: 3.8.5
 - pip install -r requirements.txt
 
 # Files
