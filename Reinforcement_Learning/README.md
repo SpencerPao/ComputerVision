@@ -7,3 +7,6 @@
 # Requirements
 - Python version: 3.6.13
 - pip install -r requirements.txt
+
+# Files
+- Selenium_Notebook_Test_URL_Requests.ipynb is prototyping the Reinforcement learning algorithm (includes output and explanations); An object oriented framework will be coded soon.
