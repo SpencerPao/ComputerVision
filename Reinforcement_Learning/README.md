@@ -3,6 +3,7 @@
 - Export Reinforcement Learning model for external games
 - Prototype in Jupyer notebook
 - Create Object Oriented Programming procedures for reinforcement learning
+- Explore running multiple browsers at once, feeding data inputs to same model for faster training procedure. (multiple instances training one model)
 
 # Requirements
 - Python version: >=3.6
