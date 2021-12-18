@@ -5,3 +5,6 @@ Pillow
 stable-baselines
 ipykernel
 jupyter
+opencv-python
+Pillow
+tqdm
