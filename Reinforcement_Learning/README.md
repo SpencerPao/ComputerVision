@@ -11,7 +11,8 @@
 - run `pip install -e gym_environments`
 
 # Medium post
-Gym setup reference [here](https://medium.com/deelvin-machine-learning/how-to-play-google-chrome-dino-game-using-reinforcement-learning-d5b99a5d7e04).
+Gym setup reference [here](https://www.novatec-gmbh.de/en/blog/creating-a-gym-environment/)
+
 
 # Files
 - *Selenium_Notebook_Test_URL_Requests.ipynb* is prototyping the Reinforcement learning algorithm (includes output and explanations); An object oriented framework will be coded soon.
