@@ -8,6 +8,7 @@
 # Requirements
 - Python version: >=3.6
 - Run `make install` in this directory to install dependencies.
+- run _pip install -e gym_environments_
 
 # Medium post
 Gym setup reference [here](https://medium.com/deelvin-machine-learning/how-to-play-google-chrome-dino-game-using-reinforcement-learning-d5b99a5d7e04).
