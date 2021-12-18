@@ -19,5 +19,4 @@ GYM-ENVIRONMENTS
 |   +---envs
 |       |   dinorun_env.py
 |       |   __init__.py
-
 ```
