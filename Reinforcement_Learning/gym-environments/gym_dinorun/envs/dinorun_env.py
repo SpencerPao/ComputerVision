@@ -1,3 +1,7 @@
+''' A HUGE chunk of the codebase came from the following blog:
+    https://www.advisori.de/news-projekte/details/a-headless-gym-enviroment-for-every-browser-game/
+    So, do make sure to check them out!!!
+'''
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
@@ -54,9 +58,6 @@ class WebInterface:
 
     def press_down(self):
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_DOWN)
-    # Not used
-    # def press_space(self):
-    #     self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.SPACE)
 
 
 class DinoRunEnv (gym.Env, WebInterface):
