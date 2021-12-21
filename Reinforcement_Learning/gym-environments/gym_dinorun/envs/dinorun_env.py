@@ -2,7 +2,6 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 import time
-# from WebInterface import WebInterface
 import base64
 import numpy as np
 from PIL import Image
@@ -51,16 +50,13 @@ class WebInterface:
         return screen[..., :3]
 
     def press_up(self):
-        # one space to start game.
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_UP)
 
     def press_down(self):
-        # one space to start game.
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_DOWN)
-
-    def press_space(self):
-        # one space to start game.
-        self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.SPACE)
+    # Not used
+    # def press_space(self):
+    #     self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.SPACE)
 
 
 class DinoRunEnv (gym.Env, WebInterface):
@@ -92,7 +88,7 @@ class DinoRunEnv (gym.Env, WebInterface):
             return next state, a reward, and a boolean
         '''
         assert action in self.action_space
-        self.action_dict[action]()
+        self.action_dict[action]()  # returns some function for every step.
         return self.get_info()
 
     def get_info(self):
@@ -105,6 +101,9 @@ class DinoRunEnv (gym.Env, WebInterface):
         score_array = self._driver.execute_script("return Runner.instance_.distanceMeter.digits")
         score = ''.join(score_array)
         return int(score)
+
+    def render(self):  # Gets a frame (useful for visualization -- to do in future)
+        pass
 
     def get_crashed(self):
         return self._driver.execute_script("return Runner.instance_.crashed")
