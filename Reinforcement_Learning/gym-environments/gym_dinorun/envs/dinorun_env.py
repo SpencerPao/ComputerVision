@@ -15,6 +15,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
+import cv2
 
 
 class WebInterface:
@@ -31,14 +32,16 @@ class WebInterface:
         _chrome_options.add_argument("--mute-audio")
         # required for windows OS- probably should comment out for any other OS
         _chrome_options.add_argument("--disable-gpu")
+        # _chrome_options.add_argument("--start-maximized")
+        # _chrome_options.add_argument("--window-size=100,500")
         _chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-
         # if headless:
         #     display = Display(visible=0, size=(1024, 768))
         #     display.start()
 
         self._driver = webdriver.Chrome(service=self._service,
                                         options=_chrome_options)
+
 #         self._driver.set_window_position(x=-10,y=0)
         try:
             self._driver.get('chrome://dino')
@@ -49,14 +52,28 @@ class WebInterface:
         self._driver.close()
 
     def grab_screen(self):
+        """
+            Returns screenshot from the environment.
+        """
         image_b64 = self._driver.get_screenshot_as_base64()
         screen = np.array(Image.open(BytesIO(base64.b64decode(image_b64))))
-        return screen[..., :3]
+        # Height x width
+        cropped_screen = screen[int(screen.shape[0]/5):int(3*(screen.shape[0])/5),
+                                0:int(screen.shape[1]/3),
+                                :3]
+        cropped_screen = cv2.resize(cropped_screen, dsize=(80, 80))
+        return cropped_screen
 
     def press_up(self):
+        """
+            Execute Jump command for dinosaur.
+        """
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_UP)
 
     def press_down(self):
+        """
+            Execute Duck command for dinosaur.
+        """
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_DOWN)
 
 
