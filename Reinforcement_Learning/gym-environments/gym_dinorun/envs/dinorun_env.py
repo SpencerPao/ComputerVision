@@ -3,8 +3,7 @@
     So, do make sure to check them out!!!
 '''
 import gym
-from gym import error, spaces, utils
-from gym.utils import seeding
+from gym import spaces
 import time
 import base64
 import numpy as np
@@ -16,11 +15,11 @@ from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 import cv2
+from typing import Tuple
 
 
 class WebInterface:
-    def __init__(self,
-                 custom_config=True,
+    def __init__(self, custom_config=True,
                  game_url='chrome://dino',
                  headless=False,
                  chrome_driver_path="chrome_driver/chromedriver"):
@@ -48,34 +47,34 @@ class WebInterface:
         except WebDriverException:
             pass  # For some reason I get an exception?
 
-    def end(self):
+    def end(self) -> None:
         self._driver.close()
 
-    def grab_screen(self):
+    def grab_screen(self) -> None:
         """
             Returns screenshot from the environment.
         """
         image_b64 = self._driver.get_screenshot_as_base64()
         screen = np.array(Image.open(BytesIO(base64.b64decode(image_b64))))
-        # Height x width
-        # screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)  # RGB to Grey Scale
+        screen = cv2.Canny(screen, threshold1=100, threshold2=200)
         cropped_screen = screen[int(screen.shape[0]/5):int(3*(screen.shape[0])/5),
                                 0:int(screen.shape[1]/3)]
-        cropped_screen = cv2.resize(cropped_screen, dsize=(64, 64), interpolation=cv2.INTER_CUBIC)
-        cropped_screen = np.expand_dims(cropped_screen, axis=0)  # Consider observation.
+        cropped_screen = cv2.resize(cropped_screen, dsize=(300, 300), interpolation=cv2.INTER_CUBIC)
+        cropped_screen = np.expand_dims(cropped_screen, axis=0)  # Consider observation dimension
+        cropped_screen = np.expand_dims(cropped_screen, -1)  # Add channel dimension
         return cropped_screen
 
-    def press_up(self):
+    def press_up(self) -> None:
         """
             Execute Jump command for dinosaur.
         """
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_UP)
 
-    def press_down(self):
-        """
-            Execute Duck command for dinosaur.
-        """
-        self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_DOWN)
+    # def press_down(self):
+    #     """
+    #         Execute Duck command for dinosaur.
+    #     """
+    #     self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_DOWN)
 
 
 class DinoRunEnv (gym.Env, WebInterface):
@@ -88,10 +87,10 @@ class DinoRunEnv (gym.Env, WebInterface):
         self._driver.execute_script(init_script)
 
         self.action_dict = {0: lambda: None,
-                            1: self.press_up,
-                            2: self.press_down
+                            1: self.press_up
+                            # 2: self.press_down
                             }
-        self.action_space = spaces.discrete.Discrete(3)
+        self.action_space = spaces.discrete.Discrete(2)
         self.reward_range = (-1, 0.1)
 
     def reset(self):
@@ -101,27 +100,49 @@ class DinoRunEnv (gym.Env, WebInterface):
         time.sleep(2)
         return self.grab_screen()
 
-    def step(self, action):
+    def step(self, action: int) -> Tuple[np.ndarray, float, int, bool]:
         ''' Runs one timestep of the game.
-            return next state, a reward, and a boolean
+
+            Parameters:
+            ----------
+            action: int
+                value that determines whether dinosaur jumps or ducks.
+
+            Return:
+            ----------
+            next state, a reward, and a boolean
         '''
         assert action in self.action_space
         self.action_dict[action]()  # returns some function for every step.
         return self.get_info()
 
-    def get_info(self):
+    def get_info(self) -> Tuple[np.ndarray, float, int, bool]:
+        """
+            Get important information from the environment.
+
+            Return:
+            ----------
+            next state, a reward, score, and a boolean if done.
+        """
         screen = self.grab_screen()
         score = self.get_score()
         done, reward = (True, -1) if self.get_crashed() else (False, 0.1)
         return screen, reward, score, done
 
-    def get_score(self):
+    def get_score(self) -> int:
+        """ Get score of current instance of gameplay.
+
+            Return:
+            ----------
+            current score of the instance of play (int)
+        """
         score_array = self._driver.execute_script("return Runner.instance_.distanceMeter.digits")
         score = ''.join(score_array)
         return int(score)
 
-    def render(self):  # Gets a frame (useful for visualization -- to do in future)
-        pass
+    # def render(self):  # Gets a frame (useful for visualization -- to do in future)
+    #     pass
 
     def get_crashed(self):
+        """Determine if game is still ongoing."""
         return self._driver.execute_script("return Runner.instance_.crashed")
