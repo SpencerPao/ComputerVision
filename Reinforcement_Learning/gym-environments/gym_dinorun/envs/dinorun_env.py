@@ -58,10 +58,11 @@ class WebInterface:
         image_b64 = self._driver.get_screenshot_as_base64()
         screen = np.array(Image.open(BytesIO(base64.b64decode(image_b64))))
         # Height x width
+        # screen = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)  # RGB to Grey Scale
         cropped_screen = screen[int(screen.shape[0]/5):int(3*(screen.shape[0])/5),
-                                0:int(screen.shape[1]/3),
-                                :3]
-        cropped_screen = cv2.resize(cropped_screen, dsize=(80, 80))
+                                0:int(screen.shape[1]/3)]
+        cropped_screen = cv2.resize(cropped_screen, dsize=(64, 64), interpolation=cv2.INTER_CUBIC)
+        cropped_screen = np.expand_dims(cropped_screen, axis=0)  # Consider observation.
         return cropped_screen
 
     def press_up(self):
@@ -90,7 +91,6 @@ class DinoRunEnv (gym.Env, WebInterface):
                             1: self.press_up,
                             2: self.press_down
                             }
-
         self.action_space = spaces.discrete.Discrete(3)
         self.reward_range = (-1, 0.1)
 
