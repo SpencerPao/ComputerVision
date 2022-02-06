@@ -60,7 +60,7 @@ class WebInterface:
         cropped_screen = screen[int(screen.shape[0]/5):int(3*(screen.shape[0])/5),
                                 0:int(screen.shape[1]/3)]
         cropped_screen = cv2.resize(cropped_screen, dsize=(300, 300), interpolation=cv2.INTER_CUBIC)
-        cropped_screen = np.expand_dims(cropped_screen, axis=0)  # Consider observation dimension
+        # cropped_screen = np.expand_dims(cropped_screen, axis=0)  # Consider observation dimension
         cropped_screen = np.expand_dims(cropped_screen, -1)  # Add channel dimension
         return cropped_screen
 
@@ -146,3 +146,9 @@ class DinoRunEnv (gym.Env, WebInterface):
     def get_crashed(self):
         """Determine if game is still ongoing."""
         return self._driver.execute_script("return Runner.instance_.crashed")
+
+    def pause(self):
+        return self._driver.execute_script("return Runner.instance_.stop()")
+
+    def resume(self):
+        return self._driver.execute_script("return Runner.instance_.play()")
