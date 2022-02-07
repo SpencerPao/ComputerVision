@@ -24,25 +24,31 @@ class Agent():
     def __init__(self, action_size: int):
         self.weight_backup = "models/dino_runner.h5"
         self.action_size = action_size
-        self.memory = deque(maxlen=2000)
+        self.memory = deque(maxlen=5000)  # number of images.
         self.learning_rate = 0.001
         self.OBSERVATION = 100  # timesteps to observe before training
         self.EXPLORE = 100000  # frames over which to anneal epsilon
         self.FINAL_EPSILON = 0.0001  # final value of epsilon
-        self.INITIAL_EPSILON = 0.1  # starting value of epsilon
+        self.epsilon = 1  # starting value of epsilon
         self.REPLAY_MEMORY = 50000  # number of previous transitions to remember
+        self.epsilon_min = 0.1
         self.FRAME_PER_ACTION = 1
         self.gamma = 0.95
         # self.exploration_rate = 1.0
         self.exploration_min = 0.01
-        self.exploration_decay = 0.995
+        self.epsilon_decay = 0.995
         self.img_rows, self.img_cols = 300, 300
-        self.img_channels = 4  # Number of stacked images
-        self.brain = self._buildmodel()
+        self.img_channels = 1  # Number of stacked images
+        self.update_rate = 1000  # number of iterations to update model.
+        # Construct DQN models
+        self.model = self._buildmodel()
+        self.target_model = self._buildmodel()
+        self.target_model.set_weights(self.model.get_weights())
+        self.model.summary()
 
     def _buildmodel(self):
         """
-            Constructs tensorflow model.
+            Constructs keras model.
 
             Return:
             ----------
@@ -50,57 +56,55 @@ class Agent():
         """
         print("Now we build the model")
         model = Sequential()
-        model.add(Conv2D(32, (8, 8), padding='same', strides=(4, 4),
-                  input_shape=(self.img_rows, self.img_cols, self.img_channels)))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Conv2D(32, (8, 8), strides=4, padding='same', input_shape=(
+            self.img_rows, self.img_cols, self.img_channels)))
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (4, 4), strides=(2, 2),  padding='same'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Conv2D(64, (4, 4), strides=2, padding='same'))
         model.add(Activation('relu'))
-        model.add(Conv2D(64, (3, 3), strides=(1, 1),  padding='same'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Conv2D(64, (3, 3), strides=1, padding='same'))
         model.add(Activation('relu'))
         model.add(Flatten())
-        model.add(Dense(512))
-        model.add(Activation('relu'))
-        model.add(Dense(self.action_size))
-        # Where Q learning occurs. (ACTIONS) Number of actions dino can do.
-        model.compile(loss='mse',
-                      optimizer=Adam(learning_rate=self.learning_rate))
+
+        # FC Layers
+        model.add(Dense(512, activation='relu'))
+        model.add(Dense(self.action_size, activation='linear'))
+
+        model.compile(loss='mse', optimizer=Adam())
         print("We finish building the model")
         if os.path.isfile(self.weight_backup):
             model.load_weights(self.weight_backup)
             self.exploration_rate = self.exploration_min
-        # print(model.summary())
         return model
+
+    def update_target_model(self):
+        self.target_model.set_weights(self.model.get_weights())
 
     def save_model(self):
         """
             Saves model weights to file location.
         """
-        self.brain.save(self.weight_backup)
+        self.model.save(self.weight_backup)
 
-    def act(self, state: np.ndarray, epsilon: float) -> int:
+    def act(self, state: np.ndarray) -> int:
         """
             Parameters:
             ----------
             state: np.ndarray:
                 4 x Screenshots of gym.
 
-            epsilon: float
-                threshold to determine whether random use is warrented.
-
             Return:
             ----------
             maximum value of which action to choose.
         """
-        if np.random.rand() <= epsilon:
-            print("----------Random Action----------", "epsilon: ", epsilon)
+        if np.random.rand() <= self.epsilon:
+            # print("----------Random Action----------", "epsilon: ", epsilon)
             return random.randrange(self.action_size)
 
-        act_values = self.brain.predict(state)
+        act_values = self.model.predict(state)
         # print("Predicted Act Values", act_values)
-        return np.argmax(act_values)  # return action index.
+        return np.argmax(act_values[0])  # return action index.
 
     def remember(self, state: np.ndarray,
                  action: int,
@@ -127,42 +131,36 @@ class Agent():
         """
         self.memory.append((state, action, reward, next_state, done))
 
-    def replay(self, model, minibatch, inputs, targets):
+    def replay(self, minibatch):
         """
             Parameters:
             ----------
-            model:
-                DQN model.
-            minibatch:
-                Random images to use for the training.
-            inputs:
-                Value to use as X variable.
-            targets:
-                Value to use as Y predictor.
-            done: bool:
-                determine whether the game has ended.
-
+            minibatch: np.array
+                Consists of features within the minibatch score_array
+                    state, action, reward, next_state, done
             Return:
             ----------
             loss, q_result.
         """
-        for i in range(0, len(minibatch)):
-            loss = 0
-            state_t = minibatch[i][0]    # 4D stack of images
-            action_t = minibatch[i][1]  # This is action index
-            reward_t = minibatch[i][2]  # reward at state_t due to action_t
-            state_t1 = minibatch[i][3]  # next state
-            # wheather the agent died or survided due the action
-            done = minibatch[i][4]
-            inputs[i:i + 1] = state_t
-            targets[i] = model.predict(state_t)  # predicted q values
-            q_result = model.predict(state_t1)  # predict q values for next step
-            if done:
-                targets[i, action_t] = reward_t  # if terminated, only equals reward
+        for state, action, reward, next_state, done in minibatch:
+
+            if not done:
+                target = (reward + self.gamma * np.argmax(self.target_model.predict(next_state)))
             else:
-                targets[i, action_t] = reward_t + self.gamma * np.max(q_result)
-        loss += model.train_on_batch(inputs, targets)
-        return loss, q_result
+                target = reward
+
+            # Construct the target vector as follows:
+            # 1. Use the current model to output the Q-value predictions
+            target_f = self.model.predict(state)
+
+            # 2. Rewrite the chosen action value with the computed target
+            target_f[0][action] = target
+
+            # 3. Use vectors in the objective computation
+            self.model.fit(state, target_f, epochs=1, verbose=0)
+
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
 
 
 class TRexRunner:
@@ -188,29 +186,40 @@ class TRexRunner:
 
     def init_cache(self):
         """initial variable caching, done only once"""
-        self.save_obj(self.agent.INITIAL_EPSILON, "epsilon")
+        self.save_obj(self.agent.epsilon, "epsilon")
         t = 0
         self.save_obj(t, "time")
         D = deque()
         self.save_obj(D, "D")
 
-    def save_status(self, model,
-                    D: deque,
-                    t: int,
-                    epsilon: float,
-                    loss_df: pd.DataFrame,
-                    scores_df: pd.DataFrame,
-                    actions_df: pd.DataFrame,
-                    q_values_df: pd.DataFrame):
+    def save_status(self, model=None,
+                    D: deque = None,
+                    t: int = None,
+                    epsilon: float = None,
+                    loss_df: pd.DataFrame = None,
+                    scores_df: pd.DataFrame = None,
+                    actions_df: pd.DataFrame = None,
+                    q_values_df: pd.DataFrame = None):
         model.save_weights(self.agent.weight_backup, overwrite=True)
-        self.save_obj(D, "D")  # saving episodes
-        self.save_obj(t, "time")  # caching time steps
-        # cache epsilon to avoid repeated randomness in actions
-        self.save_obj(epsilon, "epsilon")
-        loss_df.to_csv("./objects/loss_df.csv", index=False)
-        scores_df.to_csv("./objects/scores_df.csv", index=False)
-        actions_df.to_csv("./objects/actions_df.csv", index=False)
-        q_values_df.to_csv("./objects/q_values.csv", index=False)
+        # self.save_obj(D, "D")  # saving episodes
+        # self.save_obj(t, "time")  # caching time steps
+        # # cache epsilon to avoid repeated randomness in actions
+        # self.save_obj(epsilon, "epsilon")
+        # loss_df.to_csv("./objects/loss_df.csv", index=False)
+        # scores_df.to_csv("./objects/scores_df.csv", index=False)
+        # actions_df.to_csv("./objects/actions_df.csv", index=False)
+        # q_values_df.to_csv("./objects/q_values.csv", index=False)
+
+    def blend_images(self, images, blend):
+        avg_image = np.expand_dims(np.zeros((300, 300, 1), np.float64), axis=0)  # observation first
+
+        for image in images:
+            avg_image += image
+
+        if len(images) < blend:
+            return avg_image / len(images)
+        else:
+            return avg_image / blend
 
     def run(self, loss_df, scores_df, actions_df, q_values_df, compute_train: bool):
         """ Step through the environment.
@@ -235,161 +244,53 @@ class TRexRunner:
         # last_time = time.time()
         # load from file system; # store the previous observations in replay memory
         D = self.load_obj("D")
+        total_time = 0
+        blend = 4
+        all_rewards = 0  # Used to compute avg reward over time
         try:
-            # D = deque()  # experience replay memory
-            state = self.env.reset()  # initial state.
-            do_nothing = np.zeros(self.action_size)
-            do_nothing[0] = 0  # 0 -> None, 1 -> Jump
-            screen, reward, score, done = self.env.step(int(do_nothing[0]))
-            # Stack 4 images to create placeholder input
-            stacked_images = np.stack((screen, screen, screen, screen), axis=2)
-            # Reshape as observation
-            stacked_images = stacked_images.reshape(1,  # observation
-                                                    stacked_images.shape[0],  # height
-                                                    stacked_images.shape[1],  # width
-                                                    stacked_images.shape[2])  # number images
-            # print("Stacked images shape: ", stacked_images.shape)
-            initial_state = stacked_images
-            if compute_train:  # Train
-                OBSERVE = self.agent.OBSERVATION
-                epsilon = self.load_obj("epsilon")
-                model = self.agent.brain
-                model.summary()
-                print("Regular Model has been loaded in successfully.")
-            else:
-                OBSERVE = 999999999
-                epsilon = self.agent.FINAL_EPSILON
-                model = self.agent.brain
-                print("Trained Model has been loaded in successfully.")
-            t = self.load_obj("time")  # time step.
+            for e in range(self.episodes):
+                total_reward = 0
+                game_score = 0
+                state = self.env.reset()  # initial state.
+                images = deque(maxlen=blend)
+                images.append(state)
+                for t in range(20000):
+                    total_time += 1
+                    # Every update_rate timesteps we update the target network parameters
+                    if total_time % self.agent.update_rate == 0:
+                        self.agent.update_target_model()
+                    # Returning the average of the last 4 frames.
+                    state = self.blend_images(images, blend)
+                    action = self.agent.act(state)
+                    next_state, reward_t, score, done = self.env.step(action)
+                    # process next state.
+                    images.append(next_state)
+                    next_state = self.blend_images(images, blend)
 
-            # for index_episode in range(self.episodes):
-            while (True):
-                loss, q_result, action_index, reward_t = 0, 0, 0, 0
-                action_t = np.zeros([self.action_size])  # action at t
-                q = model.predict(stacked_images)  # input a stack of 4 images, get the prediction
-                max_Q = np.argmax(q)         # chosing index with maximum q value
-                action_index = max_Q
-                action_t[action_index] = 1        # o=> do nothing, 1=> jump
-                max_action = max(action_t)
-                max_index = np.where(action_t == max_action)
-                actions_df.loc[len(actions_df)] = max_index[0][0]  # determining the action taken.
-                # run the selected action and observed next state and reward
-                x_t1, reward_t, score, terminal = self.env.step(max_index[0][0])
-                scores_df.loc[len(scores_df)] = score
-                x_t1 = x_t1.reshape(1, x_t1.shape[0], x_t1.shape[1], 1)  # 1x20x40x1
-                # append the new image to input stack and remove the first one
-                stacked_images1 = np.append(x_t1, stacked_images[:, :, :, :3], axis=3)
+                    # Store sequence in replay memory
+                    self.agent.remember(state, action, reward_t, next_state, done)
 
-                # store the transition
-                D.append((stacked_images, action_index, reward_t, stacked_images1, terminal))
-                if t > OBSERVE and terminal:
-                    minibatch = random.sample(D, self.sample_batch_size)
-                    inputs = np.zeros((self.sample_batch_size,
-                                       stacked_images.shape[1],
-                                       stacked_images.shape[2],
-                                       stacked_images.shape[3]))
-                    targets = np.zeros((inputs.shape[0], self.action_size))  # 32, 2
-                    loss, q_result = self.agent.replay(model, minibatch, inputs, targets)
-                    print("Loss: ", loss, "Q Result: ", q_result)
-                    print("np.max: ", np.max(q_result))
-                    print("Length Q values Df", len(q_values_df))
-                    loss_df.loc[len(loss_df)] = loss
-                    # print("Value to include : ", q_values_df.loc[len(q_values_df)-1])
-                    q_values_df.loc[len(q_values_df)] = np.argmax(q_result)
-                    state = ""
-                    if t <= OBSERVE:
-                        state = "observe"
-                    elif t > OBSERVE and t <= OBSERVE + self.agent.EXPLORE:
-                        state = "explore"
-                    else:
-                        state = "train"
-                    print("Trained on End Screen:",
-                          "TIMESTEP", t,
-                          "/ STATE", state,
-                          "/ EPSILON", epsilon,
-                          "/ ACTION", action_index,
-                          "/ REWARD", reward_t,
-                          "/ Q_MAX ", np.argmax(q_result),
-                          "/ Loss ",  loss)
-                    self.env.reset()
-                stacked_images = stacked_images1
-                t += 1
+                    state = next_state
+                    game_score += reward_t
+                    reward_t -= 1  # Punish behavior which does not accumulate reward
+                    total_reward += reward_t
+                    if done:
+                        all_rewards += game_score
 
-            # # if done:
-            # #     self.env.resume()
-            # loss, q_result, action_index, reward_t, score = 0, 0, 0, 0, 0
-            # action_range = np.zeros([self.action_size])  # action at t (None, jump)
-            # done = False
-            # # choose an action epsilon greedy
-            # if t % self.agent.FRAME_PER_ACTION == 0:  # parameter to skip frames for actions
-            #     action_index = self.agent.act(stacked_images, epsilon)
-            #     action_range[action_index] = 1
-            #
-            # if epsilon > self.agent.FINAL_EPSILON and t > OBSERVE:
-            #     epsilon -= (self.agent.INITIAL_EPSILON -
-            #                 self.agent.FINAL_EPSILON) / self.agent.EXPLORE
-            #
-            # # run the selected action and observed next state and reward_t
-            # max_action = max(action_range)
-            # max_index = np.where(action_range == max_action)
-            # next_state, reward_t, score, done = self.env.step(max_index[0][0])
-            # # helpful for measuring frame rate
-            # # print('fps: {0}'.format(1 / (time.time()-last_time)))
-            # # last_time = time.time()
-            # next_state = next_state.reshape(
-            #     1, next_state.shape[0], next_state.shape[1], 1)  # 1x300x300x1
-            # # append the new image to input stack and remove the first one
-            # stacked_images1 = np.append(next_state, stacked_images[:, :, :, :3], axis=3)
-            #
-            # # store the transition in D
-            # D.append((stacked_images, action_index, reward_t, stacked_images1, done))
-            # if len(D) > self.agent.REPLAY_MEMORY:
-            #     D.popleft()
-            # # only train if done observing
-            # if t > OBSERVE:
-            #     # sample a minibatch to train on
-            #     minibatch = random.sample(D, self.sample_batch_size)
-            #     inputs = np.zeros(
-            #         (self.sample_batch_size,
-            #          stacked_images.shape[1],
-            #          stacked_images.shape[2],
-            #          stacked_images.shape[3]))
-            #     targets = np.zeros((inputs.shape[0], self.agent.action_size))  # 32, 2
-            #     loss = self.agent.replay(model, minibatch, inputs, targets)
-            #     loss_df.loc[len(loss_df)] = loss
-            #     q_values_df.loc[len(q_values_df)] = np.max(q_result)
-            #
-            # t = t + 1
-            # stacked_images = stacked_images1
-            # # save progress every 1000 iterations
-            # if t % 1000 == 0:
-            #     print("-------------- Saving state --------------")
-            #     self.env.pause()  # pause game while saving to filesystem
-            #     self.save_status(model, D, t, epsilon, loss_df,
-            #                      scores_df, actions_df, q_values_df)
-            #     self.env.resume()
-            # state = ""
-            # if t <= OBSERVE:
-            #     state = "observe"
-            # elif t > OBSERVE and t <= OBSERVE + self.agent.EXPLORE:
-            #     state = "explore"
-            # else:
-            #     state = "train"
-            # print("TIMESTEP", t,
-            #       "/ STATE", state,
-            #       "/ EPSILON", epsilon,
-            #       "/ ACTION", action_index,
-            #       "/ REWARD", reward_t,
-            #       "/ Q_MAX ", np.max(q_result),
-            #       "/ Loss ",  loss)
+                        print("episode: {}/{}, game score: {}, reward: {}, avg reward: {}, time: {}, total time: {}"
+                              .format(e+1, self.episodes, game_score, total_reward, all_rewards/(e+1), t, total_time))
+                        if len(self.agent.memory) > self.sample_batch_size:
+                            minibatch = random.sample(self.agent.memory, self.sample_batch_size)
+                            self.agent.replay(minibatch)
+                        break
 
             print("Episode finished!")
             print("************************")
         finally:
             print('******************************************************')
             print("Manual Override.... saving state.")
-            self.save_status(model, D, t, epsilon, loss_df, scores_df, actions_df, q_values_df)
+            # self.save_status(model, D, t, epsilon, loss_df, scores_df, actions_df, q_values_df)
+            self.save_status(self.agent.model)
             print('- Finished Saving.')
             print('******************************************************')
 
