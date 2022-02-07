@@ -194,15 +194,15 @@ class TRexRunner:
         D = deque()
         self.save_obj(D, "D")
 
-    def save_status(self, model=None,
-                    # D: deque = None,
-                    # t: int = None,
-                    # epsilon: float = None,
-                    # loss_df: pd.DataFrame = None,
-                    # scores_df: pd.DataFrame = None,
-                    # actions_df: pd.DataFrame = None,
-                    # q_values_df: pd.DataFrame = None
-                    ):
+    def save_status(self, model=None):
+        # D: deque = None,
+        # t: int = None,
+        # epsilon: float = None,
+        # loss_df: pd.DataFrame = None,
+        # scores_df: pd.DataFrame = None,
+        # actions_df: pd.DataFrame = None,
+        # q_values_df: pd.DataFrame = None
+        # ):
         """
         model: keras model
             Model weights to be saved.
