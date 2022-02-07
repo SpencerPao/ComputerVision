@@ -48,12 +48,20 @@ class WebInterface:
             pass  # For some reason I get an exception?
 
     def end(self) -> None:
+        """Close environment."""
         self._driver.close()
 
+    # def rgba2rgb(self, im):
+    #     bg = Image.new("RGB", im.size, (255, 255, 255))  # fill background as white color
+    #     bg.paste(im, mask=im.split()[3])  # 3 is the alpha channel
+    #     print("Image size: ", bg.size)
+    #     return bg
+    #
+    # def get_canvas(self):
+    #     return self._driver.execute_script('return document.getElementsByClassName("runner-canvas")[0].toDataURL().substring(22);')
+
     def grab_screen(self) -> None:
-        """
-            Returns screenshot from the environment.
-        """
+        """Returns screenshot from the environment."""
         image_b64 = self._driver.get_screenshot_as_base64()
         screen = np.array(Image.open(BytesIO(base64.b64decode(image_b64))))
         screen = cv2.Canny(screen, threshold1=100, threshold2=200)
@@ -65,9 +73,7 @@ class WebInterface:
         return cropped_screen
 
     def press_up(self) -> None:
-        """
-            Execute Jump command for dinosaur.
-        """
+        """Execute Jump command for dinosaur."""
         self._driver.find_element(By.TAG_NAME, "body").send_keys(Keys.ARROW_UP)
 
     # def press_down(self):
@@ -94,35 +100,38 @@ class DinoRunEnv (gym.Env, WebInterface):
         self.reward_range = (-1, 0.1)
 
     def reset(self):
-        '''Resets environment and returns initial observation.'''
+        """Resets environment and returns initial observation."""
         self._driver.execute_script("Runner.instance_.restart()")
         self.step(1)
         time.sleep(2)
         return self.grab_screen()
 
     def step(self, action: int) -> Tuple[np.ndarray, float, int, bool]:
-        ''' Runs one timestep of the game.
+        """
+        Runs one timestep of the game.
 
-            Parameters:
-            ----------
-            action: int
-                value that determines whether dinosaur jumps or ducks.
+        Parameters
+        ----------
+        action: int
+            value that determines whether dinosaur jumps or ducks.
 
-            Return:
-            ----------
-            next state, a reward, and a boolean
-        '''
+        Return:
+        ------
+        next state, a reward, and a boolean
+
+        """
         assert action in self.action_space
         self.action_dict[action]()  # returns some function for every step.
         return self.get_info()
 
     def get_info(self) -> Tuple[np.ndarray, float, int, bool]:
         """
-            Get important information from the environment.
+        Get important information from the environment.
 
-            Return:
-            ----------
-            next state, a reward, score, and a boolean if done.
+        Return:
+        ------
+        next state, a reward, score, and a boolean if done.
+
         """
         screen = self.grab_screen()
         score = self.get_score()
@@ -130,11 +139,13 @@ class DinoRunEnv (gym.Env, WebInterface):
         return screen, reward, score, done
 
     def get_score(self) -> int:
-        """ Get score of current instance of gameplay.
+        """
+        Get score of current instance of gameplay.
 
-            Return:
-            ----------
-            current score of the instance of play (int)
+        Return:
+        ------
+        current score of the instance of play (int)
+
         """
         score_array = self._driver.execute_script("return Runner.instance_.distanceMeter.digits")
         score = ''.join(score_array)
@@ -148,7 +159,9 @@ class DinoRunEnv (gym.Env, WebInterface):
         return self._driver.execute_script("return Runner.instance_.crashed")
 
     def pause(self):
+        """Pause game."""
         return self._driver.execute_script("return Runner.instance_.stop()")
 
     def resume(self):
+        """Resume game."""
         return self._driver.execute_script("return Runner.instance_.play()")
