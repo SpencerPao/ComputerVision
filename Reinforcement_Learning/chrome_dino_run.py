@@ -3,6 +3,7 @@ Creating the Model inspiration: https://pytorch.org/tutorials/intermediate/reinf
 https://medium.com/@gtnjuvin/my-journey-into-deep-q-learning-with-keras-and-gym-3e779cc12762
 https://github.com/openai/gym/blob/master/gym/envs/classic_control/cartpole.py
 https://blog.paperspace.com/dino-run/
+https://github.com/moduIo/Deep-Q-network/blob/master/DQN.ipynb
 """
 import pickle
 import gym_dinorun
@@ -176,23 +177,23 @@ class TRexRunner:
         self.env = gym.make("DinoRun-v0")
         self.action_size = self.env.action_space.n
         self.agent = Agent(self.action_size)
-        self.init_cache()
+        # self.init_cache()
 
-    def save_obj(self, obj, name):
-        with open('objects/' + name + '.pkl', 'wb') as f:  # dump files into objects folder
-            pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+    # def save_obj(self, obj, name):
+    #     with open('objects/' + name + '.pkl', 'wb') as f:  # dump files into objects folder
+    #         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+    #
+    # def load_obj(self, name):
+    #     with open('objects/' + name + '.pkl', 'rb') as f:
+    #         return pickle.load(f)
 
-    def load_obj(self, name):
-        with open('objects/' + name + '.pkl', 'rb') as f:
-            return pickle.load(f)
-
-    def init_cache(self):
-        """initial variable caching, done only once"""
-        self.save_obj(self.agent.epsilon, "epsilon")
-        t = 0
-        self.save_obj(t, "time")
-        D = deque()
-        self.save_obj(D, "D")
+    # def init_cache(self):
+    #     """Initial variable caching, done only once"""
+    #     self.save_obj(self.agent.epsilon, "epsilon")
+    #     t = 0
+    #     self.save_obj(t, "time")
+    #     D = deque()
+    #     self.save_obj(D, "D")
 
     def save_status(self, model=None):
         # D: deque = None,
@@ -229,6 +230,7 @@ class TRexRunner:
         Return:
         ------
         averaged images
+
         """
         avg_image = np.expand_dims(np.zeros((300, 300, 1), np.float64), axis=0)  # observation first
 
@@ -240,7 +242,12 @@ class TRexRunner:
         else:
             return avg_image / blend
 
-    def run(self, loss_df, scores_df, actions_df, q_values_df, compute_train: bool):
+    def run(self):
+        # , loss_df: pd.DataFrame,
+        #         scores_df: pd.DataFrame,
+        #         actions_df: pd.DataFrame,
+        #         q_values_df: pd.DataFrame,
+        #         compute_train: bool):
         """
         Step through the environment.
 
@@ -316,26 +323,27 @@ class TRexRunner:
 def main():
     """Main executable for RL on dinosaur game."""
     # path variables
-    loss_file_path = "./objects/loss_df.csv"
-    actions_file_path = "./objects/actions_df.csv"
-    q_value_file_path = "./objects/q_values.csv"
-    scores_file_path = "./objects/scores_df.csv"
-    # Intialize log structures from file if exists else create new
-    loss_df = pd.read_csv(loss_file_path) if os.path.isfile(
-        loss_file_path) else pd.DataFrame(columns=['loss'])
-    scores_df = pd.read_csv(scores_file_path) if os.path.isfile(
-        loss_file_path) else pd.DataFrame(columns=['scores'])
-    actions_df = pd.read_csv(actions_file_path) if os.path.isfile(
-        actions_file_path) else pd.DataFrame(columns=['actions'])
-    q_values_df = pd.read_csv(actions_file_path) if os.path.isfile(
-        q_value_file_path) else pd.DataFrame(columns=['qvalues'])
+    # loss_file_path = "./objects/loss_df.csv"
+    # actions_file_path = "./objects/actions_df.csv"
+    # q_value_file_path = "./objects/q_values.csv"
+    # scores_file_path = "./objects/scores_df.csv"
+    # # Intialize log structures from file if exists else create new
+    # loss_df = pd.read_csv(loss_file_path) if os.path.isfile(
+    #     loss_file_path) else pd.DataFrame(columns=['loss'])
+    # scores_df = pd.read_csv(scores_file_path) if os.path.isfile(
+    #     loss_file_path) else pd.DataFrame(columns=['scores'])
+    # actions_df = pd.read_csv(actions_file_path) if os.path.isfile(
+    #     actions_file_path) else pd.DataFrame(columns=['actions'])
+    # q_values_df = pd.read_csv(actions_file_path) if os.path.isfile(
+    #     q_value_file_path) else pd.DataFrame(columns=['qvalues'])
 
     dino = TRexRunner()
-    dino.run(loss_df,
-             scores_df,
-             actions_df,
-             q_values_df,
-             compute_train=True)
+    dino.run()
+    # loss_df,
+    #          scores_df,
+    #          actions_df,
+    #          q_values_df,
+    #          compute_train=True
 
 
 if __name__ == '__main__':
