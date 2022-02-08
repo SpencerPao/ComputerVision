@@ -5,10 +5,16 @@
 - Create Object Oriented Programming procedures for reinforcement learning
 - Explore running multiple browsers at once, feeding data inputs to same model for faster training procedure. (multiple instances training one model)
 
+# DQN executable
+```
+python chrome_dino_env.py
+```
+
 # Requirements
 - Python version: >=3.6
 - Run `make install` in this directory to install dependencies.
 - run `pip install -e gym_environments`
+- Ensure that you install gym environment prior to installing the requirements.txt file. (You might have to comment out my gym package in the requirements file)
 
 # Medium post
 Gym setup reference [here](https://www.novatec-gmbh.de/en/blog/creating-a-gym-environment/)
